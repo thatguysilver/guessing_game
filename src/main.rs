@@ -1,6 +1,7 @@
 extern crate rand; //imports rand
 
 use std::io; //imports io from the standard library
+use std::cmp::Ordering; //for using match
 use rand::Rng; //uses the rng method from the rand crate
 
 fn main() { //defines main function
@@ -9,9 +10,9 @@ fn main() { //defines main function
     let secret_number = rand::thread_rng().gen_range(1, 101);
     //rand is the module
     //:: is the secret magical bullshit
-    //thread is related to threading; not totally sure.
+    //thread is related to threading; not totally sure.!
     //rng() is a method from rand
-    
+
     println!("It's {}", secret_number); //for testing purposes only
 
     let mut guess = String::new();
@@ -31,6 +32,19 @@ fn main() { //defines main function
     //sidenote: this all could have been one line.
     //anyway, .expect() is similar to py's try/except syntax, except cleaner.
 
+    let guess: u32 = guess.trim().parse()
+        .expect("Please type a number!");
+    //adds to the guess var by defining it as a u32 number, an
+    //unsigned thirty-two bit number. Rust defalts to i32, a regular
+    //32-bit number, so we had to convert it when we called it.
+
     println!("You guessed: {}", guess);
-    //this is straight out of py, but cleaner.
+    //this is straight out of py, but cleaner. For testing purposes only.
+
+    match guess.cmp(&secret_number) { //cmp() compares using the less, greater, or equal operators
+        Ordering::Less => println!("Too low!"),
+        Ordering::Greater => println!("Too high!"),
+        Ordering::Equal => println!("You win!"),
+    }
+
 }

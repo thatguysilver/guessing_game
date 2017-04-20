@@ -15,7 +15,10 @@ fn main() { //defines main function
 
     println!("It's {}", secret_number); //for testing purposes only
 
-    let mut guess = String::new();
+    loop { //deffo less clunky than typing :"while True" every time.
+
+
+        let mut guess = String::new();
         //let starts defining a variable
         //mut says it's mutable (by default, Rust var is immutable)
         //guess is our fn name
@@ -23,28 +26,36 @@ fn main() { //defines main function
         //:: is esoteric shit that py has not prepared me for
         //new() is a common type of identifier that says guess is a new var
 
-    io::stdin().read_line(&mut guess)
+        io::stdin().read_line(&mut guess)
     //io::stdin() is more esoteric Rust shit. Dammit.
     //read_line() is a method of io (???) that reads lines.
     //& is not explained well by official doc. I guess it precedes any argument being passed to a function.
 
-        .expect("Failed to read line");
+            .expect("Failed to read line");
     //sidenote: this all could have been one line.
     //anyway, .expect() is similar to py's try/except syntax, except cleaner.
 
-    let guess: u32 = guess.trim().parse()
-        .expect("Please type a number!");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num, //success
+            Err(_) => continue, //failure
+        };
     //adds to the guess var by defining it as a u32 number, an
     //unsigned thirty-two bit number. Rust defalts to i32, a regular
     //32-bit number, so we had to convert it when we called it.
+    //the trim() fn gets rid of any whitespace around the var so we can type a number w/ spaces around it
+    //the parse() passes a string into a number; we have to specify which type of number, hence u32
+    //the colon tells Rust we're going to be modifying the var
 
-    println!("You guessed: {}", guess);
+        println!("You guessed: {}", guess);
     //this is straight out of py, but cleaner. For testing purposes only.
 
-    match guess.cmp(&secret_number) { //cmp() compares using the less, greater, or equal operators
-        Ordering::Less => println!("Too low!"),
-        Ordering::Greater => println!("Too high!"),
-        Ordering::Equal => println!("You win!"),
+        match guess.cmp(&secret_number) { //cmp() compares using the less, greater, or equal operators
+            Ordering::Less => println!("Too low!"),
+            Ordering::Greater => println!("Too high!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
     }
-
 }
